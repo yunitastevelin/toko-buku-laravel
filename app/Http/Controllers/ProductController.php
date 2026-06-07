@@ -13,9 +13,23 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category')->get();
+        $query = Product::with('category');
 
-        return view('products.index', compact('products'));
+    if($request->search)
+    {
+        $query->where(
+            'nama_produk',
+            'like',
+            '%'.$request->search.'%'
+        );
+    }
+
+    $products = $query->paginate(5);
+
+    return view(
+        'products.index',
+        compact('products')
+    );
     }
 
     /**

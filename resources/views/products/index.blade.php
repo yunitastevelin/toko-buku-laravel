@@ -1,3 +1,13 @@
+<form method="GET">
+
+    <input type="text" name="search" placeholder="Cari Produk">
+
+    <button type="submit">
+        Cari
+    </button>
+
+</form>
+
 @foreach ($products as $product)
     <tr>
 
@@ -17,3 +27,5 @@
 
     </tr>
 @endforeach
+
+{{ $products->links() }}
