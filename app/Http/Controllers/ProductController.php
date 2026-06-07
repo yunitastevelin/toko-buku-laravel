@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Models\Category;
 
 class ProductController extends Controller
 {
@@ -11,7 +13,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::with('category')->get();
+
+        return view('products.index', compact('products'));
     }
 
     /**
@@ -19,7 +23,9 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all();
+
+        return view('products.create', compact('categories'));
     }
 
     /**
@@ -27,7 +33,26 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'category_id' => 'required',
+            'nama_produk' => 'required',
+            'harga' => 'required|numeric',
+            'stok' => 'required|integer',
+            'gambar' => 'required|image'
+        ]);
+
+        $gambar = $request->file('gambar')
+        ->store('products', 'public');
+
+        Product::create([
+            'category_id' => $request->category_id,
+            'nama_produk' => $request->nama_produk,
+            'harga' => $request->harga,
+            'stok' => $request->stok,
+            'gambar' => $gambar
+        ]);
+
+        return redirect()->route('products.index');
     }
 
     /**
@@ -43,7 +68,12 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $categories = Category::all();
+
+        return view('products.edit', compact(
+            'product',
+            'categories'
+        ));
     }
 
     /**
@@ -51,7 +81,23 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'category_id' => 'required',
+            'nama_produk' => 'required',
+            'harga' => 'required|numeric',
+            'stok' => 'required|integer'
+        ]);
+
+        $data = $request->except('gambar');
+
+        if ($request->hasFile('gambar')) {
+            $data['gambar'] = $request->file('gambar')
+            ->store('products', 'public');
+        }
+
+        $product->update($data);
+
+        return redirect()->route('products.index');
     }
 
     /**
@@ -59,6 +105,8 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $product->delete();
+
+        return redirect()->route('products.index');
     }
 }

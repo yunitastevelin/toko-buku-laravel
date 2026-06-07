@@ -11,7 +11,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::all();
+
+        return view('categories.index', compact('categories'));
     }
 
     /**
@@ -19,7 +21,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('categories.create');
     }
 
     /**
@@ -28,12 +30,12 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-        'nama_kategori' => 'required']);
+            'nama_kategori' => 'required'
+        ]);
 
         Category::create($request->all());
 
-    return redirect()->route('categories.index');
-    }
+        return redirect()->route('categories.index');
 
     /**
      * Display the specified resource.
@@ -48,7 +50,7 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('categories.edit', compact('category'));
     }
 
     /**
@@ -57,12 +59,12 @@ class CategoryController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-        'nama_kategori' => 'required'
-    ]);
+            'nama_kategori' => 'required'
+        ]);
 
-    $category->update($request->all());
+        $category->update($request->all());
 
-    return redirect()->route('categories.index');
+        return redirect()->route('categories.index');
     }
 
     /**
@@ -72,6 +74,6 @@ class CategoryController extends Controller
     {
         $category->delete();
 
-    return redirect()->route('categories.index');
+        return redirect()->route('categories.index');
     }
 }
